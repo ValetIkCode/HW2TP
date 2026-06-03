@@ -44,14 +44,14 @@ class Recipe:
         self.ingredients.append(ingredient)
 
     @staticmethod
-    def is_valid(ratio):
+    def is_valid_ratio(ratio):
         if (type(ratio) == int) or (type(ratio) == float):
             if ratio > 0:
                 return True
         return False
 
     def scale(self, ratio):
-        if Recipe.is_valid(ratio) == False:
+        if Recipe.is_valid_ratio(ratio) == False:
             raise ValueError("Коэффициент должен быть положительным")
         new_recipe = Recipe(self.title)
 
@@ -73,3 +73,41 @@ class Recipe:
         for ingredient in self.ingredients:
             result = result + "\n- " + str(ingredient)
         return result
+
+class ShoppingList:
+    def __init__(self):
+        self.items = []
+
+    def add_recipe(self, recipe, portions):
+        if portions<=0:
+            raise ValueError("Количество порций должно быть положительным.")
+        new_recipe = recipe.scale(portions)
+        for ingredient in new_recipe.ingredients:
+            self.items.append((ingredient, recipe.title))
+
+    def remove_recipe(self, title):
+        result= []
+
+        for item in self.items:
+            if item[1]!=title:
+                result.append(item)
+        self.items = result
+
+    def get_list(self):
+        result = []
+
+        for item in self.items:
+            ingredient = item[0]
+            found = False
+            for current in result:
+                if (current.name == ingredient.name) and (current.unit == ingredient.unit):
+                    current.quantity+=ingredient.quantity
+                    found = True
+            if not found:
+                result.append(Ingredient(ingredient.name, ingredient.quantity,ingredient.unit))
+        return result
+
+    def __add__(self, other):
+        new_list = ShoppingList()
+        new_list.items = self.items + other.items
+        return new_list
