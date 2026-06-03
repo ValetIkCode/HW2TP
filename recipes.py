@@ -117,5 +117,9 @@ class DietaryRecipe(Recipe):
         Recipe.__init__(self, title, ingredients)
         self.diet_type = diet_type
 
+    def scale(self, ratio):
+        recipe = Recipe.scale(self, ratio)
+        return DietaryRecipe(recipe.title, self.diet_type, recipe.ingredients)
+
     def __str__(self):
         return "[" + self.diet_type + "] " + Recipe.__str__(self)
