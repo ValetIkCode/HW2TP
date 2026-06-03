@@ -35,13 +35,15 @@ class Recipe:
             for i in ingredients:
                 self.add_ingredient(i)
 
-    def add_ingredient(self, ingredient):
-        for i in range(len(self.ingredients)):
-            if self.ingredients[i] == ingredient:
-                self.ingredients[i].quantity = self.ingredients[i].quantity + ingredient.quantity
-                return
+    def add_recipe(self, recipe, portions):
+        if portions <= 0:
+            raise ValueError("Количество порций должно быть положительным.")
 
-        self.ingredients.append(ingredient)
+        title = recipe.title
+        new_recipe = recipe.scale(portions)
+
+        for ingredient in new_recipe.ingredients:
+            self.items.append((ingredient, title))
 
     @staticmethod
     def is_valid_ratio(ratio):
